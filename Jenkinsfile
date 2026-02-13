@@ -10,29 +10,9 @@ pipeline {
 
         stage('Clone') {
             steps {
-                script {
-                    // Clean workspace before cloning
-                    deleteDir()
-
-                    git branch: "${BRANCH_NAME}",
-                        url: "${REPO_URL}"
-                }
-            }
-        }
-
-        stage('Install Dependencies') {
-            steps {
-                sh '''
-                npm install
-                '''
-            }
-        }
-
-        stage('Build') {
-            steps {
-                sh '''
-                npm run build
-                '''
+                deleteDir()
+                git branch: "${BRANCH_NAME}",
+                    url: "${REPO_URL}"
             }
         }
 
@@ -40,7 +20,7 @@ pipeline {
             steps {
                 sh '''
                 sudo rm -rf /var/www/html/*
-                sudo cp -r build/* /var/www/html/
+                sudo cp -r * /var/www/html/
                 sudo systemctl restart nginx
                 '''
             }
@@ -49,10 +29,10 @@ pipeline {
 
     post {
         success {
-            echo "Build and Deployment Successful 🚀"
+            echo "Deployment Successful 🚀"
         }
         failure {
-            echo "Build Failed ❌ Check Logs"
+            echo "Build Failed ❌"
         }
     }
 }
