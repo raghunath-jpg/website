@@ -1,23 +1,38 @@
 pipeline {
     agent any
 
+    environment {
+        REPO_URL = 'https://github.com/raghunath-jpg/website.git'
+        BRANCH_NAME = 'main'
+    }
+
     stages {
 
         stage('Clone') {
             steps {
-                git 'https://github.com/raghunath-jpg/website.git'
+                script {
+                    // Clean workspace before cloning
+                    deleteDir()
+
+                    git branch: "${BRANCH_NAME}",
+                        url: "${REPO_URL}"
+                }
             }
         }
 
         stage('Install Dependencies') {
             steps {
-                sh 'npm install'
+                sh '''
+                npm install
+                '''
             }
         }
 
         stage('Build') {
             steps {
-                sh 'npm run build'
+                sh '''
+                npm run build
+                '''
             }
         }
 
@@ -29,6 +44,15 @@ pipeline {
                 sudo systemctl restart nginx
                 '''
             }
+        }
+    }
+
+    post {
+        success {
+            echo "Build and Deployment Successful 🚀"
+        }
+        failure {
+            echo "Build Failed ❌ Check Logs"
         }
     }
 }
