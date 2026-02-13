@@ -16,6 +16,18 @@ pipeline {
             }
         }
 
+        stage('Build') {
+            steps {
+                sh '''
+                echo "Starting Dummy Build Stage..."
+                echo "Validating project files..."
+                pwd
+                ls -la
+                echo "Dummy Build Completed Successfully ✅"
+                '''
+            }
+        }
+
         stage('Deploy to Nginx') {
             steps {
                 sh '''
